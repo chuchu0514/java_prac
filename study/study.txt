@@ -1,0 +1,60 @@
+static - 객체를 만들지 않아도 사용할 수 있는 속성 
+main 메서드도 public static void main인데, 이유가 뭔지 알아? 객체 없이 JVM이 바로 호출해야 하니까 static인 거야! 라네요
+
+    public static void main(String[] args) 자바는 항상 이 이름의 메서드를 찾아 시행하기 때문에 형태 외우기
+    
+
+float보다 double 권장
+long big = 3000000000;   // 💥 오류! 3억은 int 범위 초과라 읽기도 전에 터짐
+long big = 3000000000L;  // ✅ L 붙이면 long으로 읽어서 OK
+
+배열 선언할 땐 클래스처럼 
+int[] arr = new int[5];
+C와는 달리 문자열이 배열이 아닌 객체
+String a = "hello";
+String b = "hello";
+a == b  // 주소 비교! 위험
+ .equals()로 비교
+
+ 클래스
+ // 설계도 (클래스)
+public class Dog {
+
+    // === 필드 (변수들) ===
+    private String name;
+    private int age;
+    private static int count = 0;  // static: 모든 Dog가 공유하는 변수
+
+    // === 생성자 ===
+    public Dog(String name, int age) {
+        this.name = name;   // this.name = 필드, name = 매개변수
+        this.age = age;
+        count++;            // Dog 만들 때마다 카운트 증가
+    }
+
+    // 생성자는 여러 개 만들 수 있어 (오버로딩)
+    public Dog(String name) {
+        this.name = name;
+        this.age = 0;       // age 없이 만들면 0으로
+        count++;
+    }
+
+    // === 메서드 ===
+    public void bark() {
+        System.out.println(name + ": 멍!");
+    }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+
+    public static int getCount() {   // static 메서드는 객체 없이 호출
+        return count;
+    }
+}
+
+같은 폴더 안에 있으면 패키지 선언 필요없음 
+
+스태틱의 경우
+모든 객체가 공유하는 변수에..
+new없이도 소환할 수 있음 
+static 메서드 안에서는 static 변수/메서드만 직접 쓸 수 있다
