@@ -58,3 +58,58 @@ public class Dog {
 모든 객체가 공유하는 변수에..
 new없이도 소환할 수 있음 
 static 메서드 안에서는 static 변수/메서드만 직접 쓸 수 있다
+static은 그래서 this를 못 씀 객체를 만들어서 쓰는 게 아니기 때문 
+
+    Smartphone(String model, int price, String os) {
+        super(model, price);   // 부모 생성자 먼저 호출 — 반드시 첫 줄!
+        this.os = os;
+    }
+
+    서브클래스의 생성자 super먼저
+    super안쓰면 자동 super됨 기본생성자 중요
+
+
+업캐스팅 — 자식 객체를 부모 타입 변수에 넣는 것. //자동임
+Person p;
+Student s = new Student("이재문");
+p = s;   // 업캐스팅 — 자동, 명시 안 해도 됨
+
+p.name   // ✅ Person 멤버라 OK
+p.grade  // 💥 오류! p는 Person 타입이라 Student 멤버 못 봄 //그럼 이걸 왜 하냐? 실제 객체 타입의 메서드가 호출
+다운캐스팅 — 업캐스팅된 걸 다시 자식 타입으로 되돌리는 것. 강제 변환 필요.
+Person p = new Student("이재문");  // 업캐스팅
+Student s = (Student) p;           // 다운캐스팅 — 괄호로 명시해야 함
+s.grade = "A";  // ✅ 이제 Student 멤버 접근 가능
+
+추상 클래스 → 공통 기능 물려주려고 (부모 역할)
+인터페이스  → 공통 규격 강제하려고 (계약서 역할)
+-----------------------------------------------
+추상클래스
+abstract class Shape {
+    abstract void draw();  // 구현 없음 — 자식이 반드시 구현해야 해
+    void edit() { ... }    // 일반 메서드는 있어도 됨
+}
+Shape s = new Shape();  // 💥 추상 클래스는 new 못 함
+
+class Circle extends Shape {
+    void draw() { System.out.println("Circle"); }  // 반드시 구현해야 함
+}
+Circle c = new Circle();  // ✅ 구현한 자식은 new 가능
+
+-------------------
+인터페이스
+interface PhoneInterface {
+    void sendCall();     // 이름만, 내용 없음
+    void receiveCall();  // 이름만, 내용 없음
+}
+
+class SamsungPhone implements PhoneInterface {
+    public void sendCall() { System.out.println("띠리리리링"); }    // 구현 안 하면 오류
+    public void receiveCall() { System.out.println("전화 왔습니다."); } // 구현 안 하면 오류
+}
+
+class IPhone implements PhoneInterface {
+    public void sendCall() { System.out.println("뚜루루루"); }      // 내용은 달라도 됨
+    public void receiveCall() { System.out.println("call incoming"); }
+}
+-----------------------------------------
