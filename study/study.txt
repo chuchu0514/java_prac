@@ -112,4 +112,82 @@ class IPhone implements PhoneInterface {
     public void sendCall() { System.out.println("뚜루루루"); }      // 내용은 달라도 됨
     public void receiveCall() { System.out.println("call incoming"); }
 }
+
+interface PhoneInterface {
+    int TIMEOUT = 10000;                  // 이거나
+    final int TIMEOUT = 10000;            // 이거나
+    public static final int TIMEOUT = 10000;  // 이거나
+    // 셋 다 완전히 똑같아
+}인터페이스 안에서는 어차피 자동으로 public static final이 붙거든.
 -----------------------------------------
+
+
+// Java
+Student s = new Student();  // s는 레퍼런스, 객체 주소를 담음
+즉 포인터마냥 s는 객체가 어딨는지 가리키는 주소임 
+
+Student s1 = new Student();
+Student s2 = s1;  // 주소를 복사한 것 — 같은 객체를 둘이 가리킴
+
+s2.name = "홍길동";
+System.out.println(s1.name);  // "홍길동" — s1도 같은 객체라서
+
+
+
+자식 클래스 실행시 부모의 생성자가 반드시 실행됨 super를 명시 안 해도 super가 자동으로 나간다는 뜻 
+but 생성자를 하나라도 직접 만들면 자동 생성 안 해줌
+class A {
+    A(int x) { }  // 매개변수 생성자 직접 만듦
+}
+
+class B extends A {
+    B() { }  // super()가 A()를 찾는데 A()가 없어서 💥 오류
+}
+
+---------------------------------------------------------------
+class A {
+    A() { System.out.println("A 생성자"); }
+}
+class B extends A {
+    B() { System.out.println("B 생성자"); }
+}
+class C extends B {
+    C() { System.out.println("C 생성자"); }
+}
+
+new C();
+// 출력:
+// A 생성자  ← 제일 위 조상부터
+// B 생성자
+// C 생성자  ← 마지막에 자기 자신
+
+-----------------
+컬렉션
+ArrayList<Integer> list = new ArrayList<>();
+list.add(1);
+list.add(2);
+// 계속 추가해도 자동으로 늘어남(배열의 크기가)
+
+
+ArrayList<String> a = new ArrayList<>();
+
+a.add("hello");      // 맨 뒤에 추가
+a.add(1, "hi");      // 1번 인덱스에 삽입
+a.get(0);            // 0번 요소 가져오기
+a.remove(0);         // 0번 요소 삭제
+a.size();            // 요소 개수
+a.clear();           // 전부 삭제
+
+vector는 어레이리스트랑 같음 
+
+hash map은 딕셔너리
+
+HashMap<String, String> map = new HashMap<>();
+
+map.put("apple", "사과");   // 키-값 저장
+map.put("love", "사랑");
+
+map.get("apple");  // "사과" — 키로 값 검색
+map.remove("apple");       // 삭제
+map.size();                // 요소 개수
+map.containsKey("love");   // 키 존재 여부 확인
