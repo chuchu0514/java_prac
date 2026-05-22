@@ -266,3 +266,135 @@ synchronized void fill() {
 4. start() 호출 → JVM이 새 스레드로 run() 실행
 5. 공유 데이터 있으면 → synchronized로 보호
 6. 스레드끼리 신호 필요하면 → wait() / notify()
+
+---------------------------------ch13
+FileReader 클래스는 내부 클래스
+try catch필수
+객체 생성하듯이
+
+import java.io.*;  // 스트림 관련 클래스 전부 포함
+
+public class FileReaderEx {
+    public static void main(String[] args) {
+        FileReader fr = null;  // try 바깥에서 null로 미리 선언해둬야함
+        try {
+            fr = new FileReader("c:\\test.txt");  // 파일 열기
+            int c;
+            while ((c = fr.read()) != -1) {  // 한 글자씩 읽기, -1이면 파일 끝
+                System.out.print((char)c);   // int → char 변환해서 출력 중요
+            }
+            fr.close();  // 파일 닫기
+        } catch (IOException e) {
+            System.out.println("오류 발생"); //입출력 관련 오류
+        }
+    }
+}
+
+글자를 읽는데 왜 char가 아니라 int냐면, 파일 끝(EOF)을 -1로 표현해야 하거든. 
+char는 음수를 못 담아서 int로 받는 거야. C에서 fgetc()가 int 반환하는 것과 완전히 같은 이유야.
+
+import java.io.*;
+
+public class FileWriterEx {
+    public static void main(String[] args) {
+        InputStreamReader in = new InputStreamReader(System.in); //System.in 은 키보드인데 바이트 단위로만 읽어. 이걸 문자 단위로 바꿔주는 변환기
+        FileWriter fout = null;
+        int c;
+        try {
+            fout = new FileWriter("c:\\Temp\\test.txt"); // 파일 열기(없으면 자동 생성) , true쓰면 append모드
+            while ((c = in.read()) != -1) {  // 키보드에서 한 글자씩 읽어서
+                fout.write(c);               // 파일에 한 글자씩 쓰기
+            }
+            in.close();
+            fout.close();
+        } catch (IOException e) {
+            System.out.println("오류 발생");
+        }
+    }
+}
+
+바이너리 파일 쓰기
+import java.io.*;
+
+public class FileOutputStreamEx {
+    public static void main(String[] args) {
+        byte b[] = {7, 51, 3, 4, -1, 24};  // 저장할 바이너리 데이터
+        try {
+            FileOutputStream fout = new FileOutputStream("c:\\Temp\\test.out");
+            for (int i = 0; i < b.length; i++) {
+                fout.write(b[i]);  // 바이트 하나씩 그대로 저장
+            }
+            fout.close();
+        } catch (IOException e) { }
+    }
+}
+
+바이너리 파일 읽기
+import java.io.*;
+
+public class FileInputStreamEx {
+    public static void main(String[] args) {
+        byte b[] = new byte[6];  // 읽은 데이터 담을 배열
+        try {
+            FileInputStream fin = new FileInputStream("c:\\Temp\\test.out");
+            int n = 0, c;
+            while ((c = fin.read()) != -1) {
+                b[n] = (byte)c;  // int → byte 변환해서 배열에 저장
+                n++;
+            }
+            for (int i = 0; i < b.length; i++)
+                System.out.print(b[i] + " ");  // 7 51 3 4 -1 24
+            fin.close();
+        } catch (IOException e) { }
+    }
+}
+
+File f = new File("c:\\windows\\system.ini");
+
+f.getName();        // "system.ini"       → 파일 이름만
+f.getPath();        // "c:\\windows\\system.ini" → 전체 경로
+f.getParent();      // "c:\\windows"      → 부모 디렉터리
+f.length();         // 파일 크기 (바이트)
+f.exists();         // 파일 존재하면 true
+f.isFile();         // 일반 파일이면 true
+f.isDirectory();    // 디렉터리면 true
+f.delete();         // 파일 삭제
+f.mkdir();          // 디렉터리 생성
+
+File f = new File("c:\\Temp");
+
+// 디렉터리 안의 파일 목록 출력
+File[] subFiles = f.listFiles();
+for (int i = 0; i < subFiles.length; i++) {
+    System.out.print(subFiles[i].getName());
+    System.out.println("\t크기: " + subFiles[i].length());
+}
+
+import java.io.*;
+
+public class BlockBinaryCopy {
+    public static void main(String[] args) {
+        File src = new File("c:\\Temp\\img.jpg");   // 원본
+        File dest = new File("c:\\Temp\\back.jpg"); // 복사본
+
+        try {
+            FileInputStream fi = new FileInputStream(src);
+            FileOutputStream fo = new FileOutputStream(dest);
+            byte[] buf = new byte[1024 * 10];  // 10KB 버퍼
+
+            while (true) {
+                int n = fi.read(buf);      // 10KB씩 읽기
+                fo.write(buf, 0, n);       // 읽은 만큼 쓰기
+                if (n < buf.length)        // 파일 끝이면
+                    break;                 // 종료
+            }
+
+            fi.close();
+            fo.close();
+            System.out.println("복사 완료!");
+
+        } catch (IOException e) {
+            System.out.println("파일 복사 오류");
+        }
+    }
+}
