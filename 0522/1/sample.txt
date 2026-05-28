@@ -1,0 +1,14 @@
+Hello World! This is a Sample Text File.
+Java Programming is Fun and Exciting to Learn.
+FileReader reads characters one by one using read().
+The method returns -1 when the End Of File is reached.
+Count uppercase Letters: A B C D E F G H I J K L M
+Count lowercase letters: a b c d e f g h i j k l m
+Count digits: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Special characters are NOT counted as letters or digits.
+This line tests MIXED Case and numb3rs in t3xt.
+Java was released in 1995 by Sun Microsystems.
+There are 8 primitive types in Java: int, double, char...
+Version numbers: Java 8, Java 11, Java 17, Java 21
+File path example: C:\\TempJava\\sample.txt is used here.
+End of File reached when read() returns negative 1.
