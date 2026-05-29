@@ -1,28 +1,59 @@
+------------------------------------------------------------------------------------------------------------------------ch1
+Java는 모든 코드가 클래스 안에 있어야 해. 무조건.
 static - 객체를 만들지 않아도 사용할 수 있는 속성 
 main 메서드도 public static void main인데, 이유가 뭔지 알아? 객체 없이 JVM이 바로 호출해야 하니까 static인 거야! 라네요
 
     public static void main(String[] args) 자바는 항상 이 이름의 메서드를 찾아 시행하기 때문에 형태 외우기
-    
+
+System.out.println("Hello");   // 출력 + 줄바꿈
+System.out.print("Hello");     // 출력만 (줄바꿈 없음)
+System.out.printf("나이: %d\n", age);  // C의 printf랑 거의 동일
+"이름: " + name 이거랑 "이름: "+name 이거랑 같음
+-------------------------------------------------------------------------------------------------------------------------ch2
 
 float보다 double 권장
 long big = 3000000000;   // 💥 오류! 3억은 int 범위 초과라 읽기도 전에 터짐
 long big = 3000000000L;  // ✅ L 붙이면 long으로 읽어서 OK
 
-배열 선언할 땐 클래스처럼 
-int[] arr = new int[5];
-C와는 달리 문자열이 배열이 아닌 객체
+자바는 boolean이 존재
+
+char [] 대신 string
 String a = "hello";
 String b = "hello";
 a == b  // 주소 비교! 위험
  .equals()로 비교
+--------------------------------------------------------------------------------------------------------------------------ch3
+배열 선언할 땐 클래스처럼 
+int[] arr = new int[5];
+C와는 달리 문자열이 배열이 아닌 객체
+arr.length로 크기 바로 알 수 있음
+예외처리
+try {
+    int[] arr = new int[5];
+    arr[10] = 1;          // 예외 발생!
+} catch (ArrayIndexOutOfBoundsException e) {
+    System.out.println("배열 범위 초과!");
+} finally {
+    System.out.println("무조건 실행");  // finally는 항상 실행
+}
 
+Dog[] dogs = new Dog[3];  // Dog 객체 3개짜리 배열
+dogs[0] = new Dog("멍멍이", 3);
+dogs[1] = new Dog("초코", 5);
+dogs[2] = new Dog("콩이", 1);
+
+for (Dog d : dogs) {   // 향상된 for문 (Python의 for x in list 랑 같음)
+    d.bark();
+}
+
+---------------------------------------------------------------------------------------------------------------------------ch4클래스
  클래스
  // 설계도 (클래스)
 public class Dog {
 
     // === 필드 (변수들) ===
-    private String name;
-    private int age;
+    private String name;  // 외부에서 직접 접근 불가 캡슐화라고 함 외부에서 못 건드리게
+    public int age;       // 외부에서 접근 가능
     private static int count = 0;  // static: 모든 Dog가 공유하는 변수
 
     // === 생성자 ===
@@ -54,11 +85,57 @@ public class Dog {
 
 같은 폴더 안에 있으면 패키지 선언 필요없음 
 
+스태틱은?
+class MathUtil {
+    static int add(int a, int b) {
+        return a + b;
+    }
+}
+
+// 객체 안 만들고 바로 호출
+MathUtil.add(1, 2);
+
+
 스태틱의 경우
 모든 객체가 공유하는 변수에..
 new없이도 소환할 수 있음 
 static 메서드 안에서는 static 변수/메서드만 직접 쓸 수 있다
 static은 그래서 this를 못 씀 객체를 만들어서 쓰는 게 아니기 때문 
+
+final int MAX = 100;     // 상수 — 값 변경 불가 (C의 const)
+final class Dog { }      // 상속 불가 클래스
+final void bark() { }    // 오버라이딩 불가 메소드
+---------------------------------------------------------------------------------------------------------------------------------ch5 상속
+
+    class Animal {
+        String name;
+        void eat() { System.out.println("먹는다"); }
+    }
+
+    // Animal을 상속받는 Dog
+    class Dog extends Animal {
+        void bark() { System.out.println("왈왈!"); }
+    }
+
+    // Dog는 eat()도 쓸 수 있음
+    Dog d = new Dog();
+    d.eat();   // ✅ 부모꺼 그대로 사용
+    d.bark();  // ✅ 자기꺼
+
+    class Animal {
+        void sound() { System.out.println("..."); }
+    }
+
+    class Dog extends Animal {
+        @Override
+        void sound() { System.out.println("왈왈!"); }  // 재정의
+    }
+
+    class Cat extends Animal {
+        @Override
+        void sound() { System.out.println("야옹~"); }  // 재정의
+    }
+    //같은 메소드 이름인데 다르게 동작 --다형성 
 
     Smartphone(String model, int price, String os) {
         super(model, price);   // 부모 생성자 먼저 호출 — 반드시 첫 줄!
@@ -68,6 +145,12 @@ static은 그래서 this를 못 씀 객체를 만들어서 쓰는 게 아니기 
     서브클래스의 생성자 super먼저
     super안쓰면 자동 super됨 기본생성자 중요
 
+접근 지정자 정리
+
+public    - 같은 클래스 ✅ / 자식 클래스 ✅ / 외부 ✅
+protected - 같은 클래스 ✅ / 자식 클래스 ✅ / 외부 ❌
+private   - 같은 클래스 ✅ / 자식 클래스 ❌ / 외부 ❌
+Java 규칙: public class는 파일명과 일치해야 함 그래서 한 파일안에 public class는 하나뿐 
 
 업캐스팅 — 자식 객체를 부모 타입 변수에 넣는 것. //자동임
 Person p;
@@ -76,6 +159,25 @@ p = s;   // 업캐스팅 — 자동, 명시 안 해도 됨
 
 p.name   // ✅ Person 멤버라 OK
 p.grade  // 💥 오류! p는 Person 타입이라 Student 멤버 못 봄 //그럼 이걸 왜 하냐? 실제 객체 타입의 메서드가 호출
+
+
+다른 예로는
+
+Animal a = new Dog();  // ✅ Dog는 Animal이니까
+a.eat();   // ✅ Animal 메소드 사용 가능
+a.bark();  // ❌ Animal 타입이라 Dog 메소드 모름
+
+Animal[] animals = new Animal[3];
+animals[0] = new Dog();   // 업캐스팅
+animals[1] = new Cat();   // 업캐스팅
+animals[2] = new Duck();  // 업캐스팅
+
+for (Animal a : animals) {
+    a.sound();  // 각자 다른 sound() 실행 (동적 바인딩!) 주의 동적바인딩은 오버라이딩 한 메소드만 쓸수있음
+}
+// 왈왈! / 야옹~ / 꽥꽥!
+>>>>>>업캐스팅을 하는 이유 
+
 다운캐스팅 — 업캐스팅된 걸 다시 자식 타입으로 되돌리는 것. 강제 변환 필요.
 Person p = new Student("이재문");  // 업캐스팅
 Student s = (Student) p;           // 다운캐스팅 — 괄호로 명시해야 함
@@ -83,7 +185,7 @@ s.grade = "A";  // ✅ 이제 Student 멤버 접근 가능
 
 추상 클래스 → 공통 기능 물려주려고 (부모 역할)
 인터페이스  → 공통 규격 강제하려고 (계약서 역할)
------------------------------------------------
+
 추상클래스
 abstract class Shape {
     abstract void draw();  // 구현 없음 — 자식이 반드시 구현해야 해
@@ -96,7 +198,7 @@ class Circle extends Shape {
 }
 Circle c = new Circle();  // ✅ 구현한 자식은 new 가능
 
--------------------
+
 인터페이스
 interface PhoneInterface {
     void sendCall();     // 이름만, 내용 없음
@@ -119,8 +221,6 @@ interface PhoneInterface {
     public static final int TIMEOUT = 10000;  // 이거나
     // 셋 다 완전히 똑같아
 }인터페이스 안에서는 어차피 자동으로 public static final이 붙거든.
------------------------------------------
-
 
 // Java
 Student s = new Student();  // s는 레퍼런스, 객체 주소를 담음
@@ -144,7 +244,7 @@ class B extends A {
     B() { }  // super()가 A()를 찾는데 A()가 없어서 💥 오류
 }
 
----------------------------------------------------------------
+-----------------
 class A {
     A() { System.out.println("A 생성자"); }
 }
@@ -161,14 +261,56 @@ new C();
 // B 생성자
 // C 생성자  ← 마지막에 자기 자신
 
------------------
-컬렉션
+---------------------------------------------------------------------------------------------------------------------------------------ch6 모듈과패키지
+패키지
+import java.util.Scanner;   // java.util 패키지의 Scanner만 가져오기
+import java.util.*;          // java.util 패키지 전체 가져오기
+
+Java의 모든 클래스는 자동으로 Object를 상속받음
+
+string주요메소드
+
+String s = "Hello Java";
+
+s.length();          // 10 — 길이
+s.charAt(0);         // 'H' — 특정 위치 문자
+s.substring(6);      // "Java" — 잘라내기
+s.toUpperCase();     // "HELLO JAVA"
+s.contains("Java");  // true
+s.replace("Java", "World"); // "Hello World"
+
+wrapper
+
+기본 타입: int, double, char, boolean  ← 그냥 값
+객체 타입: String, Scanner, Dog ...    ← new로 만드는 것
+
+int     → Integer
+double  → Double
+char    → Character
+boolean → Boolean
+이 기본타입을 객체로 만드는 게 wrapper
+
+int n = 5;
+Integer boxed = n;      // 박싱 (자동)
+int unboxed = boxed;    // 언박싱 (자동) 변수이름 boxed unboxed는 상관없음 
+
+
+// 유용한 기능
+int n = Integer.parseInt("123");  // 문자열 → 정수 변환
+---------------------------------------------------------------------------------------------------------------------------------------ch7 컬렉션&제네릭
+
+컬렉션 = 크기가 자동으로 늘어나는 배열
 ArrayList<Integer> list = new ArrayList<>();
 list.add(1);
 list.add(2);
 // 계속 추가해도 자동으로 늘어남(배열의 크기가)
+저기서 Integer같은 걸 제네릭이라고함 e
+ArrayList<Integer> list = new ArrayList<>();  // 정수만
+ArrayList<String>  list = new ArrayList<>();  // 문자열만
+ArrayList<Dog>     list = new ArrayList<>();  // Dog 객체만
 
 
+----
 ArrayList<String> a = new ArrayList<>();
 
 a.add("hello");      // 맨 뒤에 추가
@@ -192,7 +334,54 @@ map.remove("apple");       // 삭제
 map.size();                // 요소 개수
 map.containsKey("love");   // 키 존재 여부 확인
 
------------------------------------------------------CH12
+
+iterator대신
+for (String s : list) {   // 향상된 for문으로 대부분 해결
+    System.out.println(s);
+}
+
+향상된for문
+
+int[] arr = {1, 2, 3, 4, 5};
+for (int n : arr) {
+    System.out.println(n);
+}
+
+일반 for랑 비교
+
+int[] arr = {1, 2, 3, 4, 5};
+for (int i = 0; i < arr.length; i++) {
+    System.out.println(arr[i]);
+}
+----------------------------------------------------------------------------------------------------------------------------------ch8자바gui
+기본구조
+import javax.swing.*;
+
+public class MyWindow extends JFrame {
+    MyWindow() {
+        setTitle("내 첫 창");    // 창 제목
+        setSize(400, 300);       // 창 크기
+        setVisible(true);        // 창 보이기
+    }
+
+    public static void main(String[] args) {
+        new MyWindow();
+    }
+}
+
+JButton btn = new JButton("클릭!");   // 버튼
+JLabel  lbl = new JLabel("안녕!");    // 텍스트
+JTextField tf = new JTextField(20);   // 입력창
+
+배치관리자
+FlowLayout왼→오른쪽 순서대로
+BorderLayout동서남북+가운데
+GridLayout격자 형태
+
+setLayout(new FlowLayout());  // 배치 방식 설정
+add(btn);                      // 컴포넌트 추가
+add(lbl);
+----------------------------------------------------------------------------------------------------------------------------------------CH12
 
 멀티프로세스 = 각자 방이 있는 자취생들
 → 서로 냉장고 따로, 완전 독립
@@ -267,7 +456,11 @@ synchronized void fill() {
 5. 공유 데이터 있으면 → synchronized로 보호
 6. 스레드끼리 신호 필요하면 → wait() / notify()
 
----------------------------------ch13
+-----------------------------------------------------------------------------------------------------------------------------------------ch13
+
+스트림이 뭐야?데이터가 흐르는 통로야. 물이 파이프로 흐르는 것처럼:파일 → [입력 스트림] → 프로그램 → [출력 스트림] → 파일
+
+
 FileReader 클래스는 내부 클래스
 try catch필수
 객체 생성하듯이
@@ -398,3 +591,4 @@ public class BlockBinaryCopy {
         }
     }
 }
+---------------------------------------------------------------------------------------------------------------------------------------
