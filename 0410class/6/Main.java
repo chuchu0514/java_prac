@@ -7,9 +7,10 @@ public class Main {
 
         Box b2 = new Box(scanner.nextInt());
         System.out.println("치환 전 -> b1 무게: " + b1.weight + ", b2 무게: " + b2.weight);
-        b2.weight = scanner.nextInt();
 
         b1 = b2;
+        b2.weight = scanner.nextInt();
+
         System.out.println("치환 및 b2 변경 후 -> b1 무게: " + b1.weight + ", b2 무게: " + b2.weight);
     }
     

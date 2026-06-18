@@ -681,7 +681,7 @@ while (it.hasNext()) {
 | 타입 | 기본형 OK | Wrapper만 (`Integer`) |
 
 ---
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 # 8장. 스윙(Swing) 기초 — *오픈북: 구조 위주*
 
 ## 기본 틀
@@ -961,6 +961,13 @@ synchronized void consume() throws InterruptedException {
 | 바이너리 쓰기 | `FileOutputStream` | |
 | 바이너리 읽기 | `FileInputStream` | |
 | 파일 속성 | `File` | 내용 아님 |
+
+기본
+import java.io.FileReader;
+import java.io.IOException;
+
+아니면
+import java.io.*;
 
 ## 텍스트 파일 (문자 스트림)
 ```java

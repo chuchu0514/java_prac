@@ -10,9 +10,7 @@ public class Smartphone {
     }
 
     public Smartphone(String model, String maker){
-        this.model = model;
-        this.maker = maker;
-        this.price = 1000000;
+        this(model,maker,1000000);
     }
 
     public void showinfo(){
